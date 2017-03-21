@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "86587506191",
+    "firebase_url": "https://pfredes-86d3e.firebaseio.com",
+    "project_id": "pfredes-86d3e",
+    "storage_bucket": "pfredes-86d3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86587506191:android:574f88e5412dd36b",
+        "android_client_info": {
+          "package_name": "com.berg.pfredes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "86587506191-r1scdocg0r80b25sdkc4fgatcksmpdlo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMF4GI7N3lJQ45HLc_OoiVxFYqzbPKttM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
