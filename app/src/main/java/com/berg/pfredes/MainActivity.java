@@ -6,16 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.source.chunk.MediaChunk;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-
-import java.io.IOException;
-
-import tv.icomp.vod.vodplayer.VodPlayer;
-import tv.icomp.vod.vodplayer.trackselector.evaluator.source.Evaluator;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnLive;
