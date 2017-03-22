@@ -208,4 +208,10 @@ public class PlayerActivity extends AppCompatActivity {
         super.onBackPressed();
         if (vodPlayer != null && vodPlayer.getExoPlayer() != null) vodPlayer.getExoPlayer().release();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (vodPlayer != null && vodPlayer.getExoPlayer() != null) vodPlayer.getExoPlayer().release();
+    }
 }
