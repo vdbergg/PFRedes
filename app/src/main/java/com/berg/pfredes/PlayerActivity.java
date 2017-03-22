@@ -1,10 +1,10 @@
 package com.berg.pfredes;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.berg.pfredes.model.ChatMessage;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.exoplayer2.C;
@@ -24,7 +23,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -48,77 +46,6 @@ public class PlayerActivity extends AppCompatActivity {
     ImageView emojiButton,submitButton;
     EmojIconActions emojIconActions;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
-
-        String url = "http://liveabr2.sambatech.com.br/abr/amazonsatabr1_3e9c859611a5e7fbedc785bd33c418b5/livestream.m3u8";
-        SimpleExoPlayerView exoPlayerView = (SimpleExoPlayerView) findViewById(R.id.sv_exo_player);
-        vodPlayer = new VodPlayer(getApplicationContext(), exoPlayerView);
-        vodPlayer.setVodPlayerListener(new VodPlayer.VodPlayerListener() {
-            @Override
-            public void onPrepared() {
-                vodPlayer.play();
-            }
-
-            @Override
-            public void onLoadingError(IOException e) {
-
-            }
-
-            @Override
-            public void onChangeLoaderState(int i) {
-
-            }
-
-            @Override
-            public long getSeekTo() {
-                return 0;
-            }
-        });
-
-        Evaluator evaluator = new Evaluator() {
-            @Override
-            public int getSelectedTrack(long l, MediaChunk mediaChunk, TrackGroup trackGroup, int i, BandwidthMeter bandwidthMeter) {
-                return 0;
-            }
-        };
-        vodPlayer.buildPlayer(url, C.TYPE_HLS, evaluator);
-
-        FirebaseApp.initializeApp(this);
-        activity_main = (RelativeLayout)findViewById(R.id.activity_player);
-
-        //Add Emoji
-        emojiButton = (ImageView)findViewById(R.id.emoji_button);
-        submitButton = (ImageView)findViewById(R.id.submit_button);
-        emojiconEditText = (EmojiconEditText)findViewById(R.id.emojicon_edit_text);
-        //emojIconActions = new EmojIconActions(getApplicationContext(),activity_main,emojiButton,emojiconEditText);
-        emojIconActions = new EmojIconActions(getApplicationContext(), activity_main, emojiconEditText, emojiButton);
-        emojIconActions.ShowEmojIcon();
-
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(emojiconEditText.getText().toString(),
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-                emojiconEditText.setText("");
-                emojiconEditText.requestFocus();
-            }
-        });
-
-        //Check if not sign-in then navigate Signin page
-        if(FirebaseAuth.getInstance().getCurrentUser() == null)
-        {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(),SIGN_IN_REQUEST_CODE);
-        }
-        else
-        {
-            Snackbar.make(activity_main,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
-            //Load content
-            displayChatMessage();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -158,28 +85,100 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_player);
+
+        String url = "http://liveabr2.sambatech.com.br/abr/amazonsatabr1_3e9c859611a5e7fbedc785bd33c418b5/livestream.m3u8";
+        SimpleExoPlayerView exoPlayerView = (SimpleExoPlayerView) findViewById(R.id.sv_exo_player);
+        vodPlayer = new VodPlayer(getApplicationContext(), exoPlayerView);
+        vodPlayer.setVodPlayerListener(new VodPlayer.VodPlayerListener() {
+            @Override
+            public void onPrepared() {
+                vodPlayer.play();
+            }
+
+            @Override
+            public void onLoadingError(IOException e) {
+
+            }
+
+            @Override
+            public void onChangeLoaderState(int i) {
+
+            }
+
+            @Override
+            public long getSeekTo() {
+                return 0;
+            }
+        });
+
+        Evaluator evaluator = new Evaluator() {
+            @Override
+            public int getSelectedTrack(long l, MediaChunk mediaChunk, TrackGroup trackGroup, int i, BandwidthMeter bandwidthMeter) {
+                return 0;
+            }
+        };
+        vodPlayer.buildPlayer(url, C.TYPE_HLS, evaluator);
+
+        activity_main = (RelativeLayout)findViewById(R.id.activity_player);
+
+        //Add Emoji
+        emojiButton = (ImageView)findViewById(R.id.emoji_button);
+        submitButton = (ImageView)findViewById(R.id.submit_button);
+        emojiconEditText = (EmojiconEditText)findViewById(R.id.emojicon_edit_text);
+        emojIconActions = new EmojIconActions(getApplicationContext(),activity_main,emojiButton,emojiconEditText);
+        emojIconActions.ShowEmojicon();
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(emojiconEditText.getText().toString(),
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                emojiconEditText.setText("");
+                emojiconEditText.requestFocus();
+            }
+        });
+
+        //Check if not sign-in then navigate Signin page
+        if(FirebaseAuth.getInstance().getCurrentUser() == null)
+        {
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(),SIGN_IN_REQUEST_CODE);
+        }
+        else
+        {
+            Snackbar.make(activity_main,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
+            //Load content
+            displayChatMessage();
+        }
+
+
+    }
+
+
+
     private void displayChatMessage() {
 
         ListView listOfMessage = (ListView)findViewById(R.id.list_of_message);
-
-        adapter = new FirebaseListAdapter<ChatMessage>(this,ChatMessage.class,R.layout.list_item,FirebaseDatabase.getInstance().getReference()) {
+        adapter = new FirebaseListAdapter<ChatMessage>(this,ChatMessage.class,R.layout.list_item,FirebaseDatabase.getInstance().getReference())
+        {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
 
                 //Get references to the views of list_item.xml
-                if (model != null) {
-                    TextView messageText, messageUser, messageTime;
-                    messageText = (EmojiconTextView) v.findViewById(R.id.message_text);
-                    messageUser = (TextView) v.findViewById(R.id.message_user);
-                    messageTime = (TextView) v.findViewById(R.id.message_time);
+                TextView messageText, messageUser, messageTime;
+                messageText = (EmojiconTextView) v.findViewById(R.id.message_text);
+                messageUser = (TextView) v.findViewById(R.id.message_user);
+                messageTime = (TextView) v.findViewById(R.id.message_time);
 
-                    messageText.setText(model.getMessageText());
-                    messageUser.setText(model.getMessageUser());
-                    messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
-                }
+                messageText.setText(model.getMessageText());
+                messageUser.setText(model.getMessageUser());
+                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
 
             }
         };
-        if (adapter != null) listOfMessage.setAdapter(adapter);
+        listOfMessage.setAdapter(adapter);
     }
 }

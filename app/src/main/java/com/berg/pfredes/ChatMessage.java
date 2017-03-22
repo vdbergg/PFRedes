@@ -1,4 +1,4 @@
-package com.berg.pfredes.model;
+package com.berg.pfredes;
 
 import java.util.Date;
 
