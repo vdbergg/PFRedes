@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
@@ -215,8 +216,8 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 
                 //Get references to the views of list_item.xml
                 TextView messageText, messageUser, messageTime;
-                ImageView photoUser;
-                photoUser = (ImageView) v.findViewById(R.id.photo_user);
+                CircleImageView photoUser;
+                photoUser = (CircleImageView) v.findViewById(R.id.photo_user);
                 messageText = (EmojiconTextView) v.findViewById(R.id.message_text);
                 messageUser = (TextView) v.findViewById(R.id.message_user);
                 messageTime = (TextView) v.findViewById(R.id.message_time);
@@ -231,7 +232,9 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
-                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
+                messageTime.setText(DateFormat.format("HH:mm", model.getMessageTime()));
+               // messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
+
                 scrollToLast(position);
 
             }
