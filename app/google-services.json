@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "86587506191-pt07v9ivicrt1kfe58bmecmsi2kdtlk9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.berg.pfredes",
+            "certificate_hash": "382890b9ee55aabeda9ddf406f20bf6b222c9f1a"
+          }
+        },
+        {
           "client_id": "86587506191-r1scdocg0r80b25sdkc4fgatcksmpdlo.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86587506191-r1scdocg0r80b25sdkc4fgatcksmpdlo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
