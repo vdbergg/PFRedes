@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import android.text.format.DateFormat;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -218,21 +221,31 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 
                 //Get references to the views of list_item.xml
                 TextView messageText, messageUser, messageTime;
-                ImageView photoUser;
+                final ImageView photoUser;
 
                 photoUser = (ImageView) v.findViewById(R.id.photo_user);
                 messageText = (EmojiconTextView) v.findViewById(R.id.message_text);
                 messageUser = (TextView) v.findViewById(R.id.message_user);
                 messageTime = (TextView) v.findViewById(R.id.message_time);
 
-                Glide
-                        .with(getApplicationContext())
-                        .load(model.getUrlPhoto())
-                        .centerCrop()
-                        .placeholder(R.drawable.com_facebook_profile_picture_blank_square)
-                        .crossFade()
-                        .into(photoUser);
-                
+                Glide.with(getApplicationContext()).load(model.getUrlPhoto()).asBitmap().centerCrop().into(new BitmapImageViewTarget(photoUser) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        photoUser.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
+//                Glide
+//                        .with(getApplicationContext())
+//                        .load(model.getUrlPhoto())
+//                        .centerCrop()
+//                        .placeholder(R.mipmap.user)
+//                        .crossFade()
+//                        .into(photoUser);
+
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
                 messageTime.setText(DateFormat.format("HH:mm", model.getMessageTime()));
