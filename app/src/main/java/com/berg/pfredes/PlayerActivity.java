@@ -228,7 +228,7 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
                 messageUser = (TextView) v.findViewById(R.id.message_user);
                 messageTime = (TextView) v.findViewById(R.id.message_time);
 
-                Glide.with(getApplicationContext()).load(model.getUrlPhoto()).asBitmap().centerCrop().into(new BitmapImageViewTarget(photoUser) {
+                Glide.with(getApplicationContext()).load(model.getUrlPhoto()).asBitmap().centerCrop().placeholder(R.mipmap.user).into(new BitmapImageViewTarget(photoUser) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable =
