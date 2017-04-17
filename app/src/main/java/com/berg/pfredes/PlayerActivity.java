@@ -3,6 +3,7 @@ package com.berg.pfredes;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -142,7 +143,13 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
         };
         vodPlayer.buildPlayer(url, C.TYPE_HLS, evaluator);
 
-       // btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in_gmail);
+        initChat();
+
+        MyLoginTask myLoginTask = new MyLoginTask();
+    }
+
+    private void initChat() {
+        // btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in_gmail);
 
 
         // Configure Google Sign In
@@ -349,5 +356,14 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getApplicationContext(), "Falhouu", Toast.LENGTH_SHORT);
+    }
+
+    private class MyLoginTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+
+
+            return null;
+        }
     }
 }
