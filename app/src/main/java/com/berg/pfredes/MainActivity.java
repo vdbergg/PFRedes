@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 if (con1.isAuthenticated()) {
                     Log.d("App", "Authentication done");
 
-                    ChatManager chatManager = ChatManager.getInstanceFor(con1);
+                    final ChatManager chatManager = ChatManager.getInstanceFor(con1);
                     chatManager.addChatListener(new ChatManagerListener() {
                         @Override
                         public void chatCreated(Chat chat, boolean createdLocally) {
@@ -74,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void processMessage(Chat chat, Message message) {
                                     System.out.println("Received message: " + (message != null? message.getBody() : "NULL"));
+                                    try {
+                                        chatManager.getThreadChat(chat.getThreadID()).sendMessage(new Message(message.getFrom(), "Resposta de retorno!"));
+                                    } catch (SmackException.NotConnectedException e) {
+                                        e.printStackTrace();
+                                        Log.d("App", "Erro ao responder mensagem");
+                                    }
                                 }
                             });
 
