@@ -202,10 +202,12 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(emojiconEditText.getText().toString(),
-                        FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
-                emojiconEditText.setText("");
-                emojiconEditText.requestFocus();
+                if (emojiconEditText.getText().toString().length() > 0) {
+                    FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(emojiconEditText.getText().toString(),
+                            FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
+                    emojiconEditText.setText("");
+                    emojiconEditText.requestFocus();
+                }
             }
         });
 
