@@ -70,6 +70,9 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
     private static final String TAG = "PlayerActivity";
     private VodPlayer vodPlayer;
     private ListView listOfMessage;
+    private RelativeLayout layoutShowChatLive;
+    private RelativeLayout layoutChat;
+    private ImageView imgShowChat;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private SignInButton btnSignIn;
@@ -77,7 +80,7 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
     private GoogleApiClient mGoogleApiClient;
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
-    RelativeLayout activity_main;
+    private View rootView;
 
     //Add Emojicon
     EmojiconEditText emojiconEditText;
@@ -91,7 +94,7 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
             AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Snackbar.make(activity_main,"You have been signed out.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rootView,"You have been signed out.", Snackbar.LENGTH_SHORT).show();
                     finish();
                 }
             });
@@ -150,16 +153,15 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 
     private void initChat() {
         // btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in_gmail);
+        layoutShowChatLive = (RelativeLayout) findViewById(R.id.layout_show_chat_live);
+        imgShowChat = (ImageView) findViewById(R.id.iv_show_chat);
+        layoutChat = (RelativeLayout) findViewById(R.id.layout_chat);
 
-
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -188,13 +190,13 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 //            }
 //        });
 
-        activity_main = (RelativeLayout)findViewById(R.id.activity_player);
+        rootView = findViewById(android.R.id.content);
 
         //Add Emoji
         emojiButton = (ImageView)findViewById(R.id.emoji_button);
         submitButton = (ImageView)findViewById(R.id.submit_button);
         emojiconEditText = (EmojiconEditText)findViewById(R.id.emojicon_edit_text);
-        emojIconActions = new EmojIconActions(getApplicationContext(),activity_main,emojiButton,emojiconEditText);
+        emojIconActions = new EmojIconActions(getApplicationContext(),rootView,emojiButton,emojiconEditText);
         emojIconActions.ShowEmojicon();
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -213,10 +215,21 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
             //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(),SIGN_IN_REQUEST_CODE);
         }
         else {
-            Snackbar.make(activity_main,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(rootView,"Welcome "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),Snackbar.LENGTH_SHORT).show();
             //Load content
             displayChatMessage();
         }
+
+        layoutShowChatLive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (layoutChat.getVisibility() == View.GONE) {
+                    showChat(true);
+                } else {
+                    showChat(false);
+                }
+            }
+        });
     }
 
     private void displayChatMessage() {
@@ -245,24 +258,30 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
                     }
                 });
 
-//                Glide
-//                        .with(getApplicationContext())
-//                        .load(model.getUrlPhoto())
-//                        .centerCrop()
-//                        .placeholder(R.mipmap.user)
-//                        .crossFade()
-//                        .into(photoUser);
-
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
                 messageTime.setText(DateFormat.format("HH:mm", model.getMessageTime()));
                // messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
 
-                scrollToLast(position);
+                scrollToLast();
 
             }
         };
         listOfMessage.setAdapter(adapter);
+    }
+
+    private void showChat(boolean isShow) {
+        if (isShow) {
+            setVisibilityChatItems(View.VISIBLE);
+            imgShowChat.setImageResource(R.mipmap.ic_expand_more_black_24dp);
+        } else {
+            setVisibilityChatItems(View.GONE);
+            imgShowChat.setImageResource(R.mipmap.ic_expand_less_black_24dp);
+        }
+    }
+
+    private void setVisibilityChatItems(int visibility) {
+        layoutChat.setVisibility(visibility);
     }
 
     private void cleanDBFirebase() {
@@ -270,14 +289,9 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
         databaseReference.removeValue();
     }
 
-    public void scrollToLast(final int position) {
+    public void scrollToLast() {
         listOfMessage.clearFocus();
-        listOfMessage.post(new Runnable() {
-            @Override
-            public void run() {
-                listOfMessage.setSelection(position);
-            }
-        });
+        listOfMessage.setSelection(adapter.getCount()-1);
     }
 
     @Override
@@ -319,12 +333,12 @@ public class PlayerActivity extends AppCompatActivity implements GoogleApiClient
 
                 firebaseAuthWithGoogle(account);
 
-                Snackbar.make(activity_main,"Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(rootView,"Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
                 displayChatMessage();
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
-                Snackbar.make(activity_main,"We couldn't sign you in.Please try again later", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(rootView,"We couldn't sign you in.Please try again later", Snackbar.LENGTH_SHORT).show();
                 finish();
             }
         }
